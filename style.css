@@ -1,0 +1,337 @@
+/* ------------------------------------------------------------------
+   Tokens — kept small on purpose.
+   ------------------------------------------------------------------ */
+:root {
+  --void: #0b0610;
+  --surface: #17101c;
+  --line: #35243d;
+
+  --crimson: #c81e42;
+  --violet: #6a2d96;
+
+  --ink: #f0e9ec;
+  --muted: #9c8aa3;
+
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+
+  --radius: 6px;
+
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------
+   Reset & base
+   ------------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2 { margin: 0; font-weight: 800; }
+p { margin: 0; }
+a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--crimson); }
+strong { color: var(--crimson); font-weight: 700; }
+button { font-family: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--crimson);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius);
+  z-index: 200;
+  transition: top 0.15s ease;
+}
+.skip-link:focus { top: 1rem; }
+
+/* ------------------------------------------------------------------
+   Folder nav — plain text links, slash-separated.
+   ------------------------------------------------------------------ */
+.folders {
+  padding: 1.5rem clamp(1.25rem, 6vw, 3rem) 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+.folder-link {
+  background: none;
+  border: none;
+  color: var(--muted);
+  padding: 0.25rem 0;
+  cursor: pointer;
+}
+.folder-link:not(:last-child)::after {
+  content: '/';
+  margin: 0 0.6rem;
+  color: var(--line);
+}
+.folder-link.is-active,
+.folder-link:hover {
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------
+   Hero
+   ------------------------------------------------------------------ */
+.hero {
+  padding: clamp(2rem, 6vh, 3.5rem) clamp(1.25rem, 6vw, 3rem) 1.5rem;
+  max-width: 40rem;
+}
+.hero-name {
+  font-size: clamp(2.25rem, 5vw + 1rem, 3.5rem);
+  letter-spacing: -0.01em;
+}
+.hero-tagline {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+.hero-tagline strong { font-weight: 700; }
+
+/* ------------------------------------------------------------------
+   Main / views
+   ------------------------------------------------------------------ */
+main {
+  max-width: 40rem;
+  padding: 0 clamp(1.25rem, 6vw, 3rem) 7rem;
+}
+.view[hidden] { display: none; }
+.view p { max-width: 60ch; }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.5rem;
+}
+.gallery-grid:empty::before {
+  content: 'no images yet — fill in GALLERY_IMAGES in main.js';
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+.gallery-tile {
+  aspect-ratio: 1;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.gallery-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rias-block {
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--crimson) 18%, var(--void)), color-mix(in srgb, var(--violet) 18%, var(--void)));
+}
+.rias-line { color: var(--ink); }
+.rias-note { margin-top: 0.5rem; color: var(--muted); font-size: 0.85rem; }
+
+/* ------------------------------------------------------------------
+   Elsewhere links
+   ------------------------------------------------------------------ */
+.elsewhere { margin-top: 3rem; }
+.elsewhere h2 {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+.elsewhere-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+/* ------------------------------------------------------------------
+   Guestbook trigger — small square, fills bottom-to-top on hold via
+   the --progress custom property set from JS. No glow, no gradient
+   ring — just a flat fill, in keeping with the rest of the page.
+   ------------------------------------------------------------------ */
+.gb-trigger {
+  position: fixed;
+  right: clamp(1rem, 4vw, 1.5rem);
+  bottom: clamp(1rem, 4vw, 1.5rem);
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(var(--crimson), var(--crimson)) bottom / 100% calc(var(--progress, 0) * 100%) no-repeat,
+    var(--surface);
+  cursor: pointer;
+  opacity: 0.55;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+.gb-trigger:hover,
+.gb-trigger:focus-visible,
+.gb-trigger.is-holding {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------
+   Guestbook dialog — flat panel, minimal chrome.
+   ------------------------------------------------------------------ */
+.gb-dialog {
+  margin: auto;
+  width: min(92vw, 26rem);
+  max-height: 85vh;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+
+  opacity: 0;
+  transition: opacity 0.18s ease, overlay 0.18s ease allow-discrete, display 0.18s ease allow-discrete;
+}
+.gb-dialog[open] { opacity: 1; }
+@starting-style {
+  .gb-dialog[open] { opacity: 0; }
+}
+.gb-dialog::backdrop {
+  background: rgba(6, 3, 9, 0.75);
+}
+
+.gb-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.9rem;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.gb-close:hover { color: var(--crimson); }
+
+.gb-heading { font-size: 1.5rem; color: var(--crimson); }
+.gb-sub { margin-top: 0.3rem; color: var(--muted); font-size: 0.85rem; }
+
+.gb-form { margin-top: 1.25rem; }
+.gb-field { margin-bottom: 0.75rem; }
+.gb-field label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.gb-field input,
+.gb-field textarea {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  background: var(--void);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  resize: vertical;
+}
+.gb-field input:focus,
+.gb-field textarea:focus { border-color: var(--crimson); }
+
+.gb-hp {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.gb-submit {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--crimson);
+  border-radius: var(--radius);
+  background: var(--crimson);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.gb-submit:hover { background: var(--void); }
+.gb-submit:disabled { opacity: 0.6; cursor: progress; }
+
+.gb-status {
+  min-height: 1.2em;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.gb-entries {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0.9rem 0 0;
+  border-top: 1px solid var(--line);
+  max-height: 14rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.gb-entry-name {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--crimson);
+}
+.gb-entry-message {
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+.gb-loading, .gb-empty {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
